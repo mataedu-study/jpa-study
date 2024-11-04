@@ -1,4 +1,4 @@
-package mataedu.jpastudy.member;
+package mataedu.jpastudy.domain.member;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
