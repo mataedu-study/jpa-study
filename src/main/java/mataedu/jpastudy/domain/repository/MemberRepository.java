@@ -19,6 +19,14 @@ public class MemberRepository {
         return query.getResultList();
     }
 
+    public void save(String username, Integer age) {
+//        TypedQuery<Member> query = em.createQuery("INSERT INTO Member (username, age) VALUES (?, ?)", Member.class);
+//        query.setParameter("username", username);
+//        query.setParameter(?, age);
+//        return query.getSingleResult();
+        em.persist(new Member(username, age));
+    }
+
     public EntityManagerFactory getEntityManagerFactory() {
         return em.getEntityManagerFactory();
     }

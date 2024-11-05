@@ -14,6 +14,20 @@ import java.util.List;
 public class MemberService {
     private final MemberRepository memberRepository;
 
+    public void saveMember(String username, Integer age) {
+        EntityManager em = memberRepository.getEntityManagerFactory().createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try (em) {
+            tx.begin();
+            memberRepository.save(username, age);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
     public List<Member> findAllMembers() {
         EntityManager em = memberRepository.getEntityManagerFactory().createEntityManager();
         EntityTransaction tx = em.getTransaction();
