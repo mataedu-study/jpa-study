@@ -1,7 +1,5 @@
 package mataedu.jpastudy.application.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import lombok.RequiredArgsConstructor;
 import mataedu.jpastudy.domain.entity.Member;
 import mataedu.jpastudy.domain.repository.MemberRepository;
@@ -14,32 +12,22 @@ import java.util.List;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    public void saveMember(String username, Integer age) {
-        EntityManager em = memberRepository.getEntityManagerFactory().createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-
-        try (em) {
-            tx.begin();
-            memberRepository.save(username, age);
-            tx.commit();
-        } catch (Exception e) {
-            tx.rollback();
-            throw e;
-        }
+    public Member save(String username, Integer age) {
+        Member member = new Member(username, age);
+        return memberRepository.save(member);
     }
 
-    public List<Member> findAllMembers() {
-        EntityManager em = memberRepository.getEntityManagerFactory().createEntityManager();
-        EntityTransaction tx = em.getTransaction();
+    public Member modifyAge(Long id, Integer age) {
+        Member member = memberRepository.findById(id);
+        member.modifyAge(age);
+        return member;
+    }
 
-        try (em) {
-            tx.begin();
-            List<Member> memberList = memberRepository.findAll();
-            tx.commit();
-            return memberList;
-        } catch (Exception e) {
-            tx.rollback();
-            throw e;
-        }
+    public Member getMemberById(Long id) {
+        return memberRepository.findById(id);
+    }
+
+    public List<Member> getMembers() {
+        return memberRepository.findAll();
     }
 }

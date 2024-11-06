@@ -19,15 +19,20 @@ public class MemberRepository {
         return query.getResultList();
     }
 
-    public void save(String username, Integer age) {
-//        TypedQuery<Member> query = em.createQuery("INSERT INTO Member (username, age) VALUES (?, ?)", Member.class);
-//        query.setParameter("username", username);
-//        query.setParameter(?, age);
-//        return query.getSingleResult();
-        em.persist(new Member(username, age));
+    public Member findById(Long id) {
+        return em.find(Member.class, id);
     }
 
-    public EntityManagerFactory getEntityManagerFactory() {
-        return em.getEntityManagerFactory();
+    public Member save(Member member) {
+        if (member.getId() == null) {
+            em.persist(member);
+        } else {
+            em.merge(member);
+        }
+        return member;
+    }
+
+    public void delete(Member member) {
+        em.remove(member);
     }
 }
