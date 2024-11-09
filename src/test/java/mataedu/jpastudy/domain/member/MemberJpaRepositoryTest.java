@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-@Rollback(false)
+//@Rollback(false)
 class MemberJpaRepositoryTest {
 
     @Autowired
@@ -51,10 +51,12 @@ class MemberJpaRepositoryTest {
         em.persist(member3);
         em.persist(member4);
 
-        em.flush();
-        em.clear();
+        em.flush(); // insert 해서 db에 data 넣기
+        em.clear(); // 1차 캐시 삭제
 
-        // when
+//        em.close();
+
+        // when // select 쿼리가 나가겠쬬?
         List<Member> result = memberJpaRepository.findByName(member1.getName());
 
         // then
@@ -68,13 +70,20 @@ class MemberJpaRepositoryTest {
         Member member = Member.of("홍길동1", "이메일");
         em.persist(member);
         em.flush();
-        em.clear();
+//        em.clear();
 
+        Member findMember = memberJpaRepository.findById(member.getId());
         String changedEmail = "변경했지롱";
-        member.updateEmail(changedEmail);
+        findMember.updateEmail(changedEmail);
+
+        System.out.println("member = " + member);
+        System.out.println("findMember = " + findMember);
+        System.out.println("member == findMember " + (findMember == member));
 
         // when
-        Member savedMember = memberJpaRepository.save(member);
+        Member savedMember = memberJpaRepository.save(findMember);
+
+        em.flush();
 
         // then
         assertThat(savedMember.getId()).isNotNull();
