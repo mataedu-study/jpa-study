@@ -46,6 +46,22 @@ class BookServiceTest {
         assertThat(book.getAuthor().getId()).isEqualTo(member.getId());
     }
 
+    @DisplayName("양방향 연관관계시 책을 하나 저장한다.")
+    @Transactional
+    @Test
+    void saveTwoWay() {
+        // given
+        BookRequestDto bookRequestDto = new BookRequestDto(member.getId(), "title", 10000, 1, LocalDate.now());
+
+        // when
+        Book book = bookService.saveTwoWay(bookRequestDto);
+
+        // then
+        assertThat(book.getId()).isNotNull();
+        assertThat(book.getAuthor().getId()).isEqualTo(member.getId());
+        assertThat(member.getBooks().stream().map(Book::getTitle)).containsOnly(book.getTitle());
+    }
+
     @DisplayName("Unique 조건을 사용하는지 테스트")
     @TestFactory
     Stream<DynamicTest> saveUniqueTest() {

@@ -39,4 +39,12 @@ public class Book {
     public void changeAuthor(Member member) {
         this.author = member;
     }
+
+    public void setAuthor(Member author) {
+        if (this.author != null) {
+            this.author.getBooks().remove(this);
+        }
+        this.author = author;
+        author.getBooks().add(this);
+    }
 }

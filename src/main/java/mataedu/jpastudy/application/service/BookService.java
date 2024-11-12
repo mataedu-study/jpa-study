@@ -25,6 +25,15 @@ public class BookService {
         return bookRepository.save(book);
     }
 
+    public Book saveTwoWay(BookRequestDto bookRequestDto) {
+        Member author = memberRepository.findById(bookRequestDto.authorId());
+        Book book = bookRequestDto.toEntity();
+
+        book.setAuthor(author);
+
+        return bookRepository.save(book);
+    }
+
     public Book findById(Long id) {
         return bookRepository.findById(id);
     }

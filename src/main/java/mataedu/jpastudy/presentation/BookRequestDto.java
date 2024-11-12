@@ -21,4 +21,12 @@ public record BookRequestDto(
                 .publishDate(publishDate)
                 .build();
     }
+
+    public Book toEntity() {
+        return Book.builder()
+                .price(price)
+                .edition(edition)
+                .publishDate(publishDate)
+                .build();
+    }
 }
