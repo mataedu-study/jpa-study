@@ -6,16 +6,14 @@ import mataedu.jpastudy.domain.entity.Member;
 import mataedu.jpastudy.domain.repository.BookRepository;
 import mataedu.jpastudy.domain.repository.MemberRepository;
 import mataedu.jpastudy.presentation.BookRequestDto;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class BookServiceTest {
@@ -46,6 +44,35 @@ class BookServiceTest {
         // then
         assertThat(book.getId()).isNotNull();
         assertThat(book.getAuthor().getId()).isEqualTo(member.getId());
+    }
+
+    @DisplayName("Unique 조건을 사용하는지 테스트")
+    @TestFactory
+    Stream<DynamicTest> saveUniqueTest() {
+        return Stream.of(
+                DynamicTest.dynamicTest("Book 저장1", () -> {
+                    // given
+                    BookRequestDto bookRequestDto = new BookRequestDto(member.getId(), "title", 10000, 1, LocalDate.now());
+
+                    // when
+                    Book book = bookService.save(bookRequestDto);
+
+                    // then
+                    assertThat(book.getId()).isNotNull();
+                    assertThat(book.getAuthor().getId()).isEqualTo(member.getId());
+                }),
+                DynamicTest.dynamicTest("Book 저장할 때 실패함", () -> {
+                    // given
+                    BookRequestDto bookRequestDto = new BookRequestDto(member.getId(), "title", 10000, 1, LocalDate.now());
+
+                    // when
+                    Book book = bookService.save(bookRequestDto);
+
+                    // then
+                    assertThat(book.getId()).isNotNull();
+                    assertThat(book.getAuthor().getId()).isEqualTo(member.getId());
+                })
+        );
     }
 
     @DisplayName("책의 저자를 변경한다.")
