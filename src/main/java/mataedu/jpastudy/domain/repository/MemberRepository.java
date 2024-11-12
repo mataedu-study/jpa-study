@@ -1,8 +1,8 @@
 package mataedu.jpastudy.domain.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import mataedu.jpastudy.domain.entity.Member;
 import org.springframework.stereotype.Repository;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Transactional
 @Repository
 public class MemberRepository {
     private final EntityManager em;

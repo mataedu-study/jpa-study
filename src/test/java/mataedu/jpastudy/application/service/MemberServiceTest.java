@@ -1,10 +1,5 @@
 package mataedu.jpastudy.application.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
-import jakarta.transaction.Transactional;
 import mataedu.jpastudy.domain.entity.Member;
 import mataedu.jpastudy.domain.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +11,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
 @SpringBootTest
 class MemberServiceTest {
     @Autowired
@@ -50,7 +44,7 @@ class MemberServiceTest {
         Member result = memberService.getMemberById(id);
 
         // then
-        assertThat(result).isEqualTo(member);
+        assertThat(result.getId()).isEqualTo(member.getId());
     }
 
     @DisplayName("전체 조회")

@@ -1,5 +1,6 @@
 package mataedu.jpastudy.application.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import mataedu.jpastudy.domain.entity.Member;
 import mataedu.jpastudy.domain.repository.MemberRepository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
