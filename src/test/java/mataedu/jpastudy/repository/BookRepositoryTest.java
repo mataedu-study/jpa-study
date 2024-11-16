@@ -1,15 +1,11 @@
-package mataedu.jpastudy.service;
+package mataedu.jpastudy.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import mataedu.jpastudy.domain.Author;
 import mataedu.jpastudy.domain.Book;
-import mataedu.jpastudy.repository.AuthorRepository;
-import mataedu.jpastudy.repository.BookRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,32 +13,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback(false)
-class BookServiceTest {
+class BookRepositoryTest {
 
     @Autowired
-    BookService bookService;
-
-    @Autowired
-    BookRepository bookRepository;
-
-    @Autowired
-    AuthorRepository authorRepository;
-
-    @PersistenceContext
     EntityManager em;
 
     @Test
-    void saveBook() {
+    void save() {
         // given
         Author author = Author.of("저자이름");
-        authorRepository.save(author);
+        em.persist(author);
 
         Book book = Book.of("책이름");
         book.setAuthor(author);
+        em.persist(book);
 
         // when
-        bookRepository.save(book);
+        em.flush();
+        em.clear();
 
         // then
         assertThat(book.getId()).isNotNull();
@@ -50,31 +38,24 @@ class BookServiceTest {
     }
 
     @Test
-    void updateBook() {
-    }
-
-    @Test
-    void findBooks() {
-    }
-
-    @Test
     void findOne() {
         // given
         Author author = Author.of("저자이름");
-        authorRepository.save(author);
+        em.persist(author);
 
         Book book = Book.of("책이름");
         book.setAuthor(author);
-        bookRepository.save(book);
+        em.persist(book);
 
-
-        em.clear();
+        em.flush();
+//        em.clear();
 
         // when
-        Book findBook = bookRepository.findOne(book.getId());
+        Book findBook = em.find(Book.class, book.getId());
 
         // then
         assertThat(findBook.getId()).isNotNull();
-        assertThat(findBook.getAuthor().getName()).isEqualTo("저자이름");
+        assertThat(findBook.getAuthor()).isEqualTo(author);
+
     }
 }

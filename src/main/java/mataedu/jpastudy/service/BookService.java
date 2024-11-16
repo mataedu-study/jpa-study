@@ -23,10 +23,9 @@ public class BookService {
     }
 
     @Transactional
-    public void updateBook(Long itemId, String name, Author author) {
+    public void updateBook(Long itemId, String name) {
         Book findBook = bookRepository.findOne(itemId);
         findBook.setName(name);
-        findBook.updateAuthor(author);
     }
 
     public List<Book> findBooks() {

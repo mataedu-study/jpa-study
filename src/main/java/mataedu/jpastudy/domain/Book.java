@@ -19,16 +19,16 @@ public class Book {
     @ManyToOne(fetch = FetchType.LAZY)
     private Author author;
 
-    public Book(String name, Author author) {
+    public Book(String name) {
         this.name = name;
-        this.author = author;
     }
 
-    public void updateAuthor(Author author) {
+    public void setAuthor(Author author) {
         this.author = author;
+        author.getBooks().add(this);
     }
 
-    public static Book of(String name, Author author) {
-        return new Book(name, author);
+    public static Book of(String name) {
+        return new Book(name);
     }
 }
