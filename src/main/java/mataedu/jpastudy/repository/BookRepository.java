@@ -25,7 +25,16 @@ public class BookRepository {
     }
 
     public List<Book> findAll() {
+//        return em.createQuery("select b from Book b join fetch b.author a", Book.class)
         return em.createQuery("select b from Book b", Book.class)
+                .getResultList();
+    }
+
+    public List<Book> findByAuthorName(String authorName) {
+        return em.createQuery("select b from Book b " +
+                        "join fetch b.author a " +
+                        "where a.name = :authorName", Book.class)
+                .setParameter("authorName", authorName)
                 .getResultList();
     }
 }
