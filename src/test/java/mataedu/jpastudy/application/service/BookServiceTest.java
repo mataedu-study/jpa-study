@@ -1,10 +1,10 @@
 package mataedu.jpastudy.application.service;
 
 import jakarta.transaction.Transactional;
+import mataedu.jpastudy.domain.entity.Author;
 import mataedu.jpastudy.domain.entity.Book;
-import mataedu.jpastudy.domain.entity.Member;
+import mataedu.jpastudy.domain.repository.AuthorRepository;
 import mataedu.jpastudy.domain.repository.BookRepository;
-import mataedu.jpastudy.domain.repository.MemberRepository;
 import mataedu.jpastudy.presentation.BookRequestDto;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,29 +21,29 @@ class BookServiceTest {
     BookService bookService;
 
     @Autowired
-    MemberRepository memberRepository;
+    AuthorRepository authorRepository;
 
-    Member member;
+    Author author;
     @Autowired
     private BookRepository bookRepository;
 
     @BeforeEach
     public void setUp() {
-        member = memberRepository.save(provideMember("test", 40));
+        author = authorRepository.save(provideMember("test", 40));
     }
 
     @DisplayName("책을 하나 저장한다.")
     @Test
     void save() {
         // given
-        BookRequestDto bookRequestDto = new BookRequestDto(member.getId(), "title", 10000, 1, LocalDate.now());
+        BookRequestDto bookRequestDto = new BookRequestDto(author.getId(), "title", 10000, 1, LocalDate.now());
 
         // when
         Book book = bookService.save(bookRequestDto);
 
         // then
         assertThat(book.getId()).isNotNull();
-        assertThat(book.getAuthor().getId()).isEqualTo(member.getId());
+        assertThat(book.getAuthor().getId()).isEqualTo(author.getId());
     }
 
     @DisplayName("양방향 연관관계시 책을 하나 저장한다.")
@@ -51,15 +51,15 @@ class BookServiceTest {
     @Test
     void saveTwoWay() {
         // given
-        BookRequestDto bookRequestDto = new BookRequestDto(member.getId(), "title", 10000, 1, LocalDate.now());
+        BookRequestDto bookRequestDto = new BookRequestDto(author.getId(), "title", 10000, 1, LocalDate.now());
 
         // when
         Book book = bookService.saveTwoWay(bookRequestDto);
 
         // then
         assertThat(book.getId()).isNotNull();
-        assertThat(book.getAuthor().getId()).isEqualTo(member.getId());
-        assertThat(member.getBooks().stream().map(Book::getTitle)).containsOnly(book.getTitle());
+        assertThat(book.getAuthor().getId()).isEqualTo(author.getId());
+        assertThat(author.getBooks().stream().map(Book::getTitle)).containsOnly(book.getTitle());
     }
 
     @DisplayName("Unique 조건을 사용하는지 테스트")
@@ -68,25 +68,25 @@ class BookServiceTest {
         return Stream.of(
                 DynamicTest.dynamicTest("Book 저장1", () -> {
                     // given
-                    BookRequestDto bookRequestDto = new BookRequestDto(member.getId(), "title", 10000, 1, LocalDate.now());
+                    BookRequestDto bookRequestDto = new BookRequestDto(author.getId(), "title", 10000, 1, LocalDate.now());
 
                     // when
                     Book book = bookService.save(bookRequestDto);
 
                     // then
                     assertThat(book.getId()).isNotNull();
-                    assertThat(book.getAuthor().getId()).isEqualTo(member.getId());
+                    assertThat(book.getAuthor().getId()).isEqualTo(author.getId());
                 }),
                 DynamicTest.dynamicTest("Book 저장할 때 실패함", () -> {
                     // given
-                    BookRequestDto bookRequestDto = new BookRequestDto(member.getId(), "title", 10000, 1, LocalDate.now());
+                    BookRequestDto bookRequestDto = new BookRequestDto(author.getId(), "title", 10000, 1, LocalDate.now());
 
                     // when
                     Book book = bookService.save(bookRequestDto);
 
                     // then
                     assertThat(book.getId()).isNotNull();
-                    assertThat(book.getAuthor().getId()).isEqualTo(member.getId());
+                    assertThat(book.getAuthor().getId()).isEqualTo(author.getId());
                 })
         );
     }
@@ -96,31 +96,31 @@ class BookServiceTest {
     @Test
     void editAuthor() {
         // given
-        Member changeMember = memberRepository.save(provideMember("test2", 41));
-        Book book = bookRepository.save(provideBook(member));
+        Author changeAuthor = authorRepository.save(provideMember("test2", 41));
+        Book book = bookRepository.save(provideBook(author));
 
         // when
-        book.changeAuthor(changeMember);
+        book.changeAuthor(changeAuthor);
 
         // then
-        assertThat(book.getAuthor().getId()).isEqualTo(changeMember.getId());
+        assertThat(book.getAuthor().getId()).isEqualTo(changeAuthor.getId());
     }
 
-    Member provideMember(String userName, int age) {
-        return Member.builder()
+    Author provideMember(String userName, int age) {
+        return Author.builder()
                 .username(userName)
                 .age(age)
                 .build();
     }
 
-    Book provideBook(Member member) {
+    Book provideBook(Author author) {
         return Book.builder()
-                .author(member)
+                .author(author)
                 .title("testBook")
                 .price(20000)
                 .publishDate(LocalDate.now().minusYears(1))
                 .edition(1)
-                .author(member)
+                .author(author)
                 .build();
     }
 }

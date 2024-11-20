@@ -1,7 +1,7 @@
 package mataedu.jpastudy.presentation;
 
 import mataedu.jpastudy.domain.entity.Book;
-import mataedu.jpastudy.domain.entity.Member;
+import mataedu.jpastudy.domain.entity.Author;
 
 import java.time.LocalDate;
 
@@ -12,7 +12,7 @@ public record BookRequestDto(
         int edition,
         LocalDate publishDate
 ) {
-    public Book toEntity(Member author) {
+    public Book toEntity(Author author) {
         return Book.builder()
                 .author(author)
                 .title(title)

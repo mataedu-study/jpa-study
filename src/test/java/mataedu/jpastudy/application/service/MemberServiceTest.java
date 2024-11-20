@@ -1,7 +1,7 @@
 package mataedu.jpastudy.application.service;
 
-import mataedu.jpastudy.domain.entity.Member;
-import mataedu.jpastudy.domain.repository.MemberRepository;
+import mataedu.jpastudy.domain.entity.Author;
+import mataedu.jpastudy.domain.repository.AuthorRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class MemberServiceTest {
     @Autowired
-    MemberService memberService;
+    AuthorService authorService;
 
     @Autowired
-    MemberRepository memberRepository;
+    AuthorRepository authorRepository;
 
     @DisplayName("멤버 저장")
     @Test
@@ -27,7 +27,7 @@ class MemberServiceTest {
         int age = 10;
 
         // when
-        Member result = memberService.save(userName, age);
+        Author result = authorService.save(userName, age);
 
         // then
         assertThat(result.getId()).isNotNull();
@@ -37,38 +37,38 @@ class MemberServiceTest {
     @Test
     void findById() {
         // given
-        Member member = memberRepository.save(provideMember("테스트", 10));
-        Long id  = member.getId();
+        Author author = authorRepository.save(provideMember("테스트", 10));
+        Long id  = author.getId();
 
         // when
-        Member result = memberService.getMemberById(id);
+        Author result = authorService.getMemberById(id);
 
         // then
-        assertThat(result.getId()).isEqualTo(member.getId());
+        assertThat(result.getId()).isEqualTo(author.getId());
     }
 
     @DisplayName("전체 조회")
     @Test
     void findAll() {
         // given
-        List<Member> members = List.of(
+        List<Author> authors = List.of(
                 provideMember("테스트", 10),
                 provideMember("테스트", 10),
                 provideMember("테스트", 10),
                 provideMember("테스트", 10)
         );
 
-        members.forEach(member -> memberRepository.save(member));
+        authors.forEach(member -> authorRepository.save(member));
 
         // when
-        List<Member> memberList = memberRepository.findAll();
+        List<Author> authorList = authorRepository.findAll();
 
         // then
-        assertThat(memberList).hasSize(4);
+        assertThat(authorList).hasSize(4);
     }
 
-    Member provideMember(String userName, int age) {
-        return Member.builder()
+    Author provideMember(String userName, int age) {
+        return Author.builder()
                 .username(userName)
                 .age(age)
                 .build();

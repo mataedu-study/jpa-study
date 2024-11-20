@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mataedu.jpastudy.common.BaseEntity;
 
 import java.time.LocalDate;
 
@@ -15,20 +16,17 @@ import java.time.LocalDate;
         name = "BOOK_TITLE_EDITION_UNIQUE",
         columnNames = {"title", "edition"}
 )})
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Book extends BaseEntity {
     private String title;
     private LocalDate publishDate;
     private int price;
     private int edition;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member author;
+    private Author author;
 
     @Builder
-    public Book(String title, LocalDate publishDate, int price, int edition, Member author) {
+    public Book(String title, LocalDate publishDate, int price, int edition, Author author) {
         this.title = title;
         this.publishDate = publishDate;
         this.price = price;
@@ -36,11 +34,11 @@ public class Book {
         this.author = author;
     }
 
-    public void changeAuthor(Member member) {
-        this.author = member;
+    public void changeAuthor(Author author) {
+        this.author = author;
     }
 
-    public void setAuthor(Member author) {
+    public void setAuthor(Author author) {
         if (this.author != null) {
             this.author.getBooks().remove(this);
         }
