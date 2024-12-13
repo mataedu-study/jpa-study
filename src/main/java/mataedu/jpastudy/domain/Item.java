@@ -1,19 +1,18 @@
 package mataedu.jpastudy.domain;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString
 public class Item extends BaseEntity {
 
     @Id
@@ -23,6 +22,9 @@ public class Item extends BaseEntity {
     private String name;
 
     private int price;
+
+//    @Version
+//    private Integer version;
 
     private int stock;
 
