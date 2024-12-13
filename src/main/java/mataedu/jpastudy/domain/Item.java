@@ -24,8 +24,24 @@ public class Item extends BaseEntity {
 
     private int price;
 
+    private int stock;
+
     public Item(String name, int price) {
         this.name = name;
         this.price = price;
+    }
+
+    public Item(String name, int price, int stock) {
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+    }
+
+    public void reduceStock() {
+        this.stock--;
+    }
+
+    public void reduceStock(int amount) {
+        this.stock -= amount;
     }
 }
