@@ -29,6 +29,10 @@ public class Book extends BaseEntity {
     @Comment("가격")
     public int price;
 
+
+    // 연관관계 하나더 만들어서
+    // 엮은이 만들고 공유!!!
+
     public void changeAuthor(Author getAuthor) {
         this.author = getAuthor;
         getAuthor.getBooks().add(this);

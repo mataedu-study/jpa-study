@@ -13,25 +13,26 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
 
+    @Transactional(readOnly = true)
     public List<Book> getAuthorBooks(String name) {
         Optional<Author> optionalAuthor = authorRepository.findByName(name);
 
         optionalAuthor.orElseThrow(() -> new IllegalArgumentException("해당 저자의 도서가 존재하지 않습니다."));
-        System.out.println("optionalAuthor.get().getBooks() 호출 전");
+        //System.out.println("optionalAuthor.get().getBooks() 호출 전");
         List<Book> books = optionalAuthor.get().getBooks();
-        System.out.println("optionalAuthor.get().getBooks() 호출 후");
+        //System.out.println("optionalAuthor.get().getBooks() 호출 후");
         //books.forEach(book -> System.out.println(book.getTitle())); // 각 Book 엔티티를 개별적으로 접근. 왜 쿼리 안날라가지.
 
         return optionalAuthor.get().getBooks(); //여기선 발생 안하네
     }
 
+    @Transactional
     public Author addAuthor(Author author) {
         return authorRepository.save(author);
     }

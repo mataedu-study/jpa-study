@@ -1,7 +1,10 @@
 package mataedu.jpastudy.service;
 
+import jakarta.persistence.EntityManager;
 import mataedu.jpastudy.entity.Author;
 import mataedu.jpastudy.entity.Book;
+import mataedu.jpastudy.repository.AuthorRepository;
+import mataedu.jpastudy.repository.BookRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +16,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
 class AuthorServiceTest {
 
     @Autowired
@@ -22,8 +24,15 @@ class AuthorServiceTest {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private AuthorRepository repository;
+
+    @Autowired
+    private EntityManager em;
+
     @Test
     @DisplayName("저자의 책 리스트를 조회힌다. N+1 ")
+    @Transactional
     void getAuthorBooks() {
         //given
         Author author = Author.builder().name("김영한").build();
@@ -33,11 +42,15 @@ class AuthorServiceTest {
         bookService.addBook("Spring", author.getName());
         bookService.addBook("Spring Boot", author.getName());
 
+        em.flush();
+        em.clear();
+
         //when
         System.out.println("---------------------");
-        List<Book> resultBooks = authorService.getAuthorBooks(author.getName()); // 여기선 books 조회할때 생길거라 생각했는 n+1 안생기고
-        System.out.println("22222222222222");
-       // resultBooks.forEach(book -> System.out.println(book.getTitle())); // 이렇게 직접 book의 필드로 접근 해야만 생김 => ??? 쿼리 안나감
+        Author findAuthor = repository.findById(author.getId()).get();
+        List<Book> resultBooks = authorService.getAuthorBooks(findAuthor.getName()); // 여기선 books 조회할때 생길거라 생각했는 n+1 안생기고
+        //System.out.println("22222222222222");
+        resultBooks.forEach(book -> System.out.println(book.getTitle())); // 이렇게 직접 book의 필드로 접근 해야만 생김 => ??? 쿼리 안나감
         System.out.println("---------------------");
 
         //then
