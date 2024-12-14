@@ -11,7 +11,6 @@ import java.util.List;
 public class Order extends BaseEntity {
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-
     @OrderColumn
     public List<OrderItem> orderItems;
     public String orderPersonName;
